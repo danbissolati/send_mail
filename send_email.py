@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import pandas as pd
 
-def send_email(to_address, subject, body):
+def send_email(to_address, cc_addresses, subject, body):
     from_address = "" # Insira o e-mail
     password = "" # Insira a senha do e-mail
 
@@ -17,6 +17,7 @@ def send_email(to_address, subject, body):
     msg = MIMEMultipart('related')
     msg['From'] = from_address
     msg['To'] = to_address
+    msg['Cc'] = ', '.join(cc_addresses)
     msg['Subject'] = subject
 
     # Criar a parte do corpo do e-mail
@@ -31,7 +32,7 @@ def send_email(to_address, subject, body):
     with open(image_path, 'rb') as img:
         mime_image = MIMEImage(img.read())
         mime_image.add_header('Content-ID', '<image1>')
-        mime_image.add_header('Content-Disposition', 'inline', filename='assinatura.png')
+        mime_image.add_header('Content-Disposition', 'inline', filename='')#Em Filename coloque o nome do arquivo anexado
         msg.attach(mime_image)
 
     # Enviar o e-mail
@@ -60,7 +61,7 @@ except Exception as e:
 clientes = df.to_dict(orient='records')
 
 # Caminho para a imagem
-image_path = r'B:\Desktop\send_mail\ass.png'
+image_path = r''#Preencha com o Caminho para a Imagem
 
 # Enviar e-mails individualmente
 for cliente in clientes:
@@ -86,5 +87,7 @@ for cliente in clientes:
     <img src="cid:image1" width="250px">
     <img src="https://i.imgur.com/GW90sq5.png" width="250px">
     """
-    send_email(email, assunto, corpo, image_path)
-    print(f"E-mail enviado para {email}")
+    #Preencha os emails a qual serão enviada as Copias Separando por Virgula
+    cc_emails = [""]
+    send_email(email, cc_emails, assunto, corpo)
+    print(f"E-mail enviado para {email} com cópia para {', '.join(cc_emails)}")
